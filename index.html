@@ -85,9 +85,25 @@
       <button>Console Trace</button>
       <button>Trigger a Global Error</button>
     </section>
-  </main>
 
+    <section id="decimal-to-binary">
+      <legend>Decimal to Binary</legend>
+      <input name="decimal-num" id="decimal-num">
+      <button id="convert">Convert</button>
+      <output></output>
+    </section>
+  </main>
+         
+  <script src="https://cdn.trackjs.com/agent/v3/latest/t.js"></script>
   <script>
+    window.TrackJS && TrackJS.install({ 
+      token: "81603ab8dd5b426d9aef889b82feb842"
+      // for more configuration options, see https://docs.trackjs.com
+    });
+  </script>
+                        
+  <script>
+
     let form = document.querySelector('form');
     form.addEventListener('submit', e => {
       e.preventDefault();
@@ -96,12 +112,181 @@
       let secondNum = document.querySelector('#second-num').value;
       let operator = document.querySelector('#operator').value;
       output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
+
     });
 
     let errorBtns = Array.from(document.querySelectorAll('#error-btns > button'));
 
     // Start your code here
     // You may move this JS to another file if you wish
+
+    //console log
+    errorBtns[0].addEventListener('click', event => {
+      event.preventDefault();
+      console.log('Console Log Demo');
+    })
+
+    //console error
+    errorBtns[1].addEventListener('click', event => {
+      event.preventDefault();
+      console.error('Console error demo');
+    })
+
+    //console count
+    errorBtns[2].addEventListener('click', event => {
+      event.preventDefault();
+      console.count('Count Button');
+    })
+
+    //console warn
+    errorBtns[3].addEventListener('click', event => {
+      event.preventDefault();
+      console.warn('Consle warn button');
+    })
+
+    //console Assert
+    errorBtns[4].addEventListener('click', event => {
+      event.preventDefault();
+      const number = 2;
+      const errorMsg = "The number does not equal 3";
+      console.assert(number === 3, '%o', {number, errorMsg} );
+    })
+
+    //console clear
+    errorBtns[5].addEventListener('click', event => {
+      event.preventDefault();
+      console.countReset('Count Button');
+      console.clear();
+    })
+
+    //console dir
+    errorBtns[6].addEventListener('click', event => {
+      event.preventDefault();
+      console.dir(errorBtns);
+    })
+
+    //console dirxml
+    errorBtns[7].addEventListener('click', event => {
+      event.preventDefault();
+      const section = document.getElementById('error-btns');
+      console.dirxml(section);
+    })
+
+    //console group start
+    errorBtns[8].addEventListener('click', event => {
+      event.preventDefault();
+      console.group();
+    })
+
+    //console group end
+    errorBtns[9].addEventListener('click', event => {
+      event.preventDefault();
+      console.groupEnd();
+    })
+
+    //console group table
+    errorBtns[10].addEventListener('click', event => {
+      event.preventDefault();
+      
+      function Table(name, num) {
+        this.name = name;
+        this.num = num;
+      }
+
+      const software = new Table('Software Engineer', 100);
+      const programing = new Table('Programming Language', 200);
+      const advanced = new Table('Advanced Software', 300);
+
+      console.table([software, programing, advanced]);
+    })
+
+    //console start timer
+    errorBtns[11].addEventListener('click', event => {
+      event.preventDefault();
+      console.time();
+    })
+
+    //console stop timer
+    errorBtns[12].addEventListener('click', event => {
+      event.preventDefault();
+      console.timeEnd();
+    })
+
+    //console trace
+    errorBtns[13].addEventListener('click', event => {
+      event.preventDefault();
+      function deep() {
+        function deeper() {
+          function deepest() {
+            console.trace();
+          }
+          deepest();
+        }
+        deeper();
+      }
+      deep();
+    })
+
+    //trigger a global Error
+    errorBtns[14].addEventListener('click', event => {
+      event.preventDefault();
+      eval(`${'1'} ${'+'} ${'a'}`);
+    })
+
+    //Custom error
+    class ValidationError {
+      constructor(msg) {
+        this.msg = msg;
+        this.name = "ValidationError";
+      }
+    }
+
+    //decimal to binary
+    const MAX = 256;
+    const MIN = -256;
+
+    let convert = document.getElementById('convert');
+       
+    function binaryToDecimal(json) {
+      let decimal = parseInt(json);
+
+      if(isNaN(decimal)) {
+        throw new ValidationError("Input is not a number");
+      }
+      if(decimal < MIN || decimal > MAX) {
+        throw new ValidationError("Input number is not in correct interval");
+      }
+
+      let binary = (decimal >>> 0).toString(2);
+      return binary;
+    }
+    convert.addEventListener('click', event => {
+      let decToBin = document.getElementById('decimal-to-binary');
+      let decimal = decToBin.querySelector('#decimal-num').value;
+      let output = decToBin.querySelector('output');
+
+      console.log(decimal);
+      //try converting decimal to binary
+      try {
+        let binary = binaryToDecimal(decimal);
+        output.innerHTML = binary;
+      } 
+      catch(err) {
+        if (err instanceof ValidationError) {
+          console.error(err);
+        } else {
+          console.error(err);
+      }
+      } finally {
+        console.log("finish converting");
+      }
+
+    })
+
+    // Global error handelr
+    window.addEventListener('error', err => {
+      console.log(err.message);
+    })
   </script>
 </body>
 
